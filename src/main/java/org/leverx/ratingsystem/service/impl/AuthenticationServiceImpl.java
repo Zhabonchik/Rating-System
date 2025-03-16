@@ -1,17 +1,18 @@
 package org.leverx.ratingsystem.service.impl;
 
-import org.leverx.ratingsystem.exception.UserAlreadyExistsException;
-import org.leverx.ratingsystem.exception.UserNotEnabledException;
-import org.leverx.ratingsystem.exception.UserNotFoundException;
-import org.leverx.ratingsystem.model.dto.*;
+import org.leverx.ratingsystem.exception.user.UserAlreadyExistsException;
+import org.leverx.ratingsystem.exception.user.UserNotEnabledException;
+import org.leverx.ratingsystem.exception.user.UserNotFoundException;
+import org.leverx.ratingsystem.model.dto.email.EmailDto;
+import org.leverx.ratingsystem.model.dto.user.*;
 import org.leverx.ratingsystem.model.entity.User;
 import org.leverx.ratingsystem.model.entity.UserPrincipal;
 import org.leverx.ratingsystem.repository.UserRepository;
 import org.leverx.ratingsystem.service.AuthenticationService;
-import org.leverx.ratingsystem.utils.CreateUserDtoMapper;
-import org.leverx.ratingsystem.utils.GetUserDtoMapper;
+import org.leverx.ratingsystem.utils.mapper.user.CreateUserDtoMapper;
+import org.leverx.ratingsystem.utils.mapper.user.GetUserDtoMapper;
 import org.leverx.ratingsystem.utils.JwtResponse;
-import org.leverx.ratingsystem.utils.UpdateUserDtoMapper;
+import org.leverx.ratingsystem.utils.mapper.user.UpdateUserDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public String create(CreateUserDto createUserDto) {
+    public String createUser(CreateUserDto createUserDto) {
 
         if (userRepository.existsByEmail(createUserDto.email())) {
             throw new UserAlreadyExistsException("User with email " + createUserDto.email() + " already exists");
@@ -81,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public GetUserDto update(UpdateUserDto updateUserDto) {
+    public GetUserDto updateUser(UpdateUserDto updateUserDto) {
 
         Optional<User> optionalUser = userRepository.findByEmail(updateUserDto.email());
 
@@ -93,16 +94,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         redisService.checkVerificationCode(verificationCode, updateUserDto.verificationCode());
 
-        User user = UpdateUserDtoMapper.updateUser(optionalUser.get(), updateUserDto, passwordEncoder);
+        User user = UpdateUserDtoMapper.toUser(optionalUser.get(), updateUserDto, passwordEncoder);
 
         return GetUserDtoMapper.toDto(userRepository.save(user));
 
-    }
-
-    @Override
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
     public JwtResponse verifyUser(SignInUserDto signInUserDto) {
@@ -129,14 +124,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public String verifyEmail(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+    public String verifyEmail(EmailDto emailDto) {
+        Optional<User> optionalUser = userRepository.findByEmail(emailDto.email());
 
         if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException("User with email " + email + " doesn't exist");
+            throw new UserNotFoundException("User with email " + emailDto.email() + " doesn't exist");
         }
 
-        sendVerificationCode(email);
+        sendVerificationCode(emailDto.email());
 
         return "Code for changing password has been sent to your email";
     }

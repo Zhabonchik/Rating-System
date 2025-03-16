@@ -1,7 +1,8 @@
 package org.leverx.ratingsystem.controller;
 
 import jakarta.validation.Valid;
-import org.leverx.ratingsystem.model.dto.*;
+import org.leverx.ratingsystem.model.dto.email.EmailDto;
+import org.leverx.ratingsystem.model.dto.user.*;
 import org.leverx.ratingsystem.service.AuthenticationService;
 import org.leverx.ratingsystem.utils.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public String signUp(@Valid @RequestBody CreateUserDto createUserDto) {
-        return authService.create(createUserDto);
+        return authService.createUser(createUserDto);
     }
 
     @PostMapping("/confirm")
@@ -36,13 +37,13 @@ public class AuthController {
         return authService.verifyUser(signInUserDto);
     }
 
-    @PostMapping("/forgot_password")
-    public String verifyEmail(@Valid @RequestBody String email) {
-        return authService.verifyEmail(email);
+    @PostMapping("/forgot-password")
+    public String verifyEmail(@Valid @RequestBody EmailDto emailDto) {
+        return authService.verifyEmail(emailDto);
     }
 
     @PostMapping("/reset")
     public GetUserDto resetPassword(@Valid @RequestBody UpdateUserDto updateUserDto) {
-        return authService.update(updateUserDto);
+        return authService.updateUser(updateUserDto);
     }
 }

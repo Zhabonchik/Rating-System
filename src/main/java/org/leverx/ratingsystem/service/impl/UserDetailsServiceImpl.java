@@ -1,6 +1,6 @@
 package org.leverx.ratingsystem.service.impl;
 
-import org.leverx.ratingsystem.exception.UserNotFoundException;
+import org.leverx.ratingsystem.exception.user.UserNotFoundException;
 import org.leverx.ratingsystem.model.entity.User;
 import org.leverx.ratingsystem.model.entity.UserPrincipal;
 import org.leverx.ratingsystem.repository.UserRepository;

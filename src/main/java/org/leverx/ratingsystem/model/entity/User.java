@@ -1,6 +1,10 @@
 package org.leverx.ratingsystem.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -8,6 +12,8 @@ import java.time.Instant;
 import java.util.List;
 
 @Data
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -26,7 +32,7 @@ public class User {
     private String password;
 
     @Column(name = "email", unique = true)
-    private String eMail;
+    private String email;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -50,4 +56,7 @@ public class User {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<Comment> receivedComments;
+
+    public User() {
+    }
 }

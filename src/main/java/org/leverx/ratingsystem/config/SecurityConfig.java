@@ -23,11 +23,13 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
+    private final CommentOwnerFilter commentOwnerFilter;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter){
+    public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter, CommentOwnerFilter commentOwnerFilter){
         this.userDetailsService = userDetailsService;
         this.jwtFilter = jwtFilter;
+        this.commentOwnerFilter = commentOwnerFilter;
     }
 
     @Bean
@@ -36,19 +38,25 @@ public class SecurityConfig {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/login","/auth/register", "auth/forgot_password", "auth/confirm", "/auth/reset").permitAll()
-                        .requestMatchers("").hasAnyAuthority("ADMIN", "SELLER")
+                        .requestMatchers("/auth/login","/auth/register", "auth/forgot-password", "auth/confirm", "/auth/reset").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/{userId}/comments/{commentId}")
                         .permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/users/{userId}/comments/{commentId}")
-                        .hasAuthority("SELLER")
+                        .requestMatchers(HttpMethod.GET, "/users/{userId}/comments")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/{userId}/received-comments")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/{userId}/comments")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/users/{userId}/comments/{commentId}")
+                        .hasAnyRole("SELLER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/users/{userId}/comments/{commentId}")
-                        .hasAuthority("SELLER")
-                        .requestMatchers("/users/register").hasAuthority("ADMIN")
+                        .hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(commentOwnerFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

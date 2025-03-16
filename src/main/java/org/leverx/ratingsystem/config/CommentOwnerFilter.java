@@ -4,7 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.leverx.ratingsystem.model.entity.Comment;
+import org.leverx.ratingsystem.model.entity.User;
 import org.leverx.ratingsystem.model.entity.UserPrincipal;
 import org.leverx.ratingsystem.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,7 @@ public class CommentOwnerFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
 
-        if ((method.equals("PUT") || method.equals("DELETE")) && requestURI.matches("/users/\\d+/comments/\\d+")) {
+        if ((method.equals("PATCH") || method.equals("DELETE")) && requestURI.matches("/users/\\d+/comments/\\d+")) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal userDetails)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized");
@@ -45,7 +47,7 @@ public class CommentOwnerFilter extends OncePerRequestFilter {
             Integer userId = Integer.parseInt(pathParts[2]);
             Integer commentId = Integer.parseInt(pathParts[4]);
 
-            Optional<Comment> commentOptional = commentRepository.findById(commentId);
+            Optional<Comment> commentOptional = commentRepository.findByIdWithAuthor(commentId);
             if (commentOptional.isEmpty()) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Comment not found");
                 return;

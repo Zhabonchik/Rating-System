@@ -1,7 +1,7 @@
 package org.leverx.ratingsystem.controller;
 
-import org.leverx.ratingsystem.exception.UserAlreadyExistsException;
-import org.leverx.ratingsystem.exception.UserNotFoundException;
+import org.leverx.ratingsystem.exception.user.UserAlreadyExistsException;
+import org.leverx.ratingsystem.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.leverx.ratingsystem.exception.ErrorResponse;
 import org.springframework.http.ResponseEntity;

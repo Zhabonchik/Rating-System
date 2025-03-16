@@ -1,4 +1,4 @@
-package org.leverx.ratingsystem.exception;
+package org.leverx.ratingsystem.exception.user;
 
 public class UserAlreadyExistsException extends RuntimeException{
     public UserAlreadyExistsException(String message){

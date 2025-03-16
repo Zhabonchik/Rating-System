@@ -3,6 +3,8 @@ package org.leverx.ratingsystem.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +14,8 @@ import java.time.Instant;
 @Data
 @Entity
 @Table(name = "comments")
+@Builder
+@AllArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +44,8 @@ public class Comment {
     @Min(1)
     @Max(5)
     private Integer rating;
+
+    public Comment() {
+
+    }
 }

@@ -3,6 +3,7 @@ package org.leverx.ratingsystem.service;
 import org.leverx.ratingsystem.model.dto.comment.CreateCommentDto;
 import org.leverx.ratingsystem.model.dto.comment.GetCommentDto;
 import org.leverx.ratingsystem.model.dto.comment.UpdateCommentDto;
+import org.leverx.ratingsystem.model.entity.Comment;
 
 import java.util.List;
 
@@ -22,4 +23,5 @@ public interface CommentService {
 
     void deleteComment(Integer id);
 
+    void checkVerified(Comment comment);
 }

@@ -12,6 +12,7 @@ public class CreateCommentDtoMapper {
                 .author(author)
                 .seller(seller)
                 .rating(createCommentDto.rating())
+                .verifiedByAdmin(false)
                 .build();
     }
 }

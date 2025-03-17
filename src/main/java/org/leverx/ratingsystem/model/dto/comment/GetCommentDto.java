@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 public record GetCommentDto(
+        @NotNull @NotEmpty(message = "Must not be empty") Integer id,
         @NotNull @NotEmpty(message = "Must not be empty") String message,
         @NotNull @NotEmpty(message = "Must not be empty") Integer sellerId,
         @NotNull @NotEmpty(message = "Must not be empty") Integer author_id,

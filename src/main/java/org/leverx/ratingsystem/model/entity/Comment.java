@@ -45,6 +45,9 @@ public class Comment {
     @Max(5)
     private Integer rating;
 
+    @Column(name = "verified_by_admin")
+    private Boolean verifiedByAdmin;
+
     public Comment() {
 
     }

@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/received-comments")
-    public List <GetCommentDto> receivedComments(@PathVariable Integer userId) {
+    public List <GetCommentDto> getReceivedComments(@PathVariable Integer userId) {
         return commentService.getCommentsBySellerId(userId);
     }
 
@@ -37,13 +37,13 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/comments")
-    public GetCommentDto leaveComments(@PathVariable Integer userId, @RequestBody @Valid CreateCommentDto createCommentDto,
+    public GetCommentDto leaveComment(@PathVariable Integer userId, @RequestBody @Valid CreateCommentDto createCommentDto,
                                        @RequestHeader(value = "Authorization", required = false) String token) {
         return commentService.createComment(createCommentDto, userId, token);
     }
 
     @PatchMapping("/{userId}/comments/{commentId}")
-    public GetCommentDto updateComments(@PathVariable Integer userId, @PathVariable Integer commentId,
+    public GetCommentDto updateComment(@PathVariable Integer userId, @PathVariable Integer commentId,
                                         @RequestBody @Valid UpdateCommentDto updateCommentDto) {
         return commentService.updateComment(updateCommentDto, commentId);
     }

@@ -1,6 +1,7 @@
 package org.leverx.ratingsystem.service.impl;
 
 import org.leverx.ratingsystem.exception.comment.CommentNotFoundException;
+import org.leverx.ratingsystem.exception.comment.CommentNotVerifiedException;
 import org.leverx.ratingsystem.exception.comment.WrongAuthorOfCommentException;
 import org.leverx.ratingsystem.exception.user.UserNotFoundException;
 import org.leverx.ratingsystem.model.dto.comment.CreateCommentDto;
@@ -71,6 +72,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundException("Comment with id " + id + " not found"));
 
+        checkVerified(comment);
+
         return GetCommentDtoMapper.toDto(comment);
     }
 
@@ -84,6 +87,8 @@ public class CommentServiceImpl implements CommentService {
             throw new WrongAuthorOfCommentException("Comment with id = " + commentId + " doesn't belong to user with id = " + authorId);
         }
 
+        checkVerified(comment);
+
         return GetCommentDtoMapper.toDto(comment);
     }
 
@@ -93,7 +98,10 @@ public class CommentServiceImpl implements CommentService {
         User seller = userRepository.findById(sellerId)
                 .orElseThrow(() -> new UserNotFoundException("Seller with id " + sellerId + " not found"));
 
-        return GetCommentDtoMapper.toDto(seller.getReceivedComments());
+        List<Comment> receivedVerifiedComments = seller.getReceivedComments().stream()
+                .filter(Comment::getVerifiedByAdmin).toList();
+
+        return GetCommentDtoMapper.toDto(receivedVerifiedComments);
     }
 
     @Override
@@ -101,11 +109,21 @@ public class CommentServiceImpl implements CommentService {
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new UserNotFoundException("Seller with id " + authorId + " not found"));
 
-        return GetCommentDtoMapper.toDto(author.getComments());
+        List<Comment> verifiedComments = author.getComments().stream()
+                .filter(Comment::getVerifiedByAdmin).toList();
+
+        return GetCommentDtoMapper.toDto(verifiedComments);
     }
 
     @Override
     public void deleteComment(Integer id) {
         commentRepository.deleteById(id);
+    }
+
+    @Override
+    public void checkVerified(Comment comment) {
+        if (!comment.getVerifiedByAdmin()) {
+            throw new CommentNotVerifiedException("Comment with id = " + comment.getId() + " hasn't been verified yet");
+        }
     }
 }

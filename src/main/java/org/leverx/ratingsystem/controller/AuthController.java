@@ -28,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/confirm")
-    public String confirmEmail(@Valid @RequestBody ConfirmUserDto confirmUserDto) {
+    public String confirmUser(@Valid @RequestBody ConfirmUserDto confirmUserDto) {
         return authService.confirmEmail(confirmUserDto);
     }
 

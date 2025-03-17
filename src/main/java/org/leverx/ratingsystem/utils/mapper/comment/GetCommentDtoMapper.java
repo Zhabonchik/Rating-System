@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class GetCommentDtoMapper {
     public static GetCommentDto toDto(Comment comment) {
         return new GetCommentDto(
+                comment.getId(),
                 comment.getMessage(),
                 comment.getSeller().getId(),
                 (comment.getAuthor() == null) ? null : comment.getAuthor().getId(),

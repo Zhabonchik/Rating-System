@@ -42,6 +42,8 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/login","/auth/register", "auth/forgot-password", "auth/confirm", "/auth/reset").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/rating")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/{userId}/comments/{commentId}")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/{userId}/comments")

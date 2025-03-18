@@ -1,5 +1,6 @@
 package org.leverx.ratingsystem.service.impl;
 
+import jakarta.transaction.Transactional;
 import org.leverx.ratingsystem.exception.comment.CommentNotFoundException;
 import org.leverx.ratingsystem.exception.comment.CommentNotVerifiedException;
 import org.leverx.ratingsystem.exception.comment.WrongAuthorOfCommentException;
@@ -93,6 +94,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public List<GetCommentDto> getCommentsBySellerId(Integer sellerId) {
 
         User seller = userRepository.findById(sellerId)

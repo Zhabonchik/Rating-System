@@ -7,9 +7,13 @@ import org.leverx.ratingsystem.model.dto.comment.UpdateCommentDto;
 import org.leverx.ratingsystem.model.dto.gameObject.CreateGameObjectDto;
 import org.leverx.ratingsystem.model.dto.gameObject.GetGameObjectDto;
 import org.leverx.ratingsystem.model.dto.gameObject.UpdateGameObjectDto;
+import org.leverx.ratingsystem.model.dto.user.GetUserDto;
+import org.leverx.ratingsystem.model.dto.user.GetUserWithRatingDto;
 import org.leverx.ratingsystem.service.CommentService;
 import org.leverx.ratingsystem.service.GameObjectService;
+import org.leverx.ratingsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +24,21 @@ public class UserController {
 
     private final CommentService commentService;
     private final GameObjectService gameObjectService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(CommentService commentService, GameObjectService gameObjectService) {
+    public UserController(CommentService commentService, GameObjectService gameObjectService, UserService userService) {
         this.commentService = commentService;
         this.gameObjectService = gameObjectService;
+        this.userService = userService;
+    }
+
+    @GetMapping("/rating")
+    public Page<GetUserWithRatingDto> getUsersSortedByRating(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+            ) {
+        return userService.findAllSortedByRating(page, size);
     }
 
     @GetMapping("/{userId}/received-comments")

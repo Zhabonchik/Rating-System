@@ -24,12 +24,15 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
     private final CommentOwnerFilter commentOwnerFilter;
+    private final GameObjectOwnerFilter gameObjectOwnerFilter;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter, CommentOwnerFilter commentOwnerFilter){
+    public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter,
+                          CommentOwnerFilter commentOwnerFilter, GameObjectOwnerFilter gameObjectOwnerFilter){
         this.userDetailsService = userDetailsService;
         this.jwtFilter = jwtFilter;
         this.commentOwnerFilter = commentOwnerFilter;
+        this.gameObjectOwnerFilter = gameObjectOwnerFilter;
     }
 
     @Bean
@@ -45,11 +48,21 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/{userId}/received-comments")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/{userId}/objects")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/{userId}/objects/{objectId}")
+                        .permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/{userId}/comments")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/{userId}/objects")
+                        .hasRole("SELLER")
                         .requestMatchers(HttpMethod.PATCH, "/users/{userId}/comments/{commentId}")
                         .hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/users/{userId}/objects/{objectId}")
+                        .hasAnyRole("SELLER","ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/users/{userId}/comments/{commentId}")
+                        .hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/{userId}/objects/{objectId}")
                         .hasAnyRole("SELLER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
@@ -57,6 +70,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(commentOwnerFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(gameObjectOwnerFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

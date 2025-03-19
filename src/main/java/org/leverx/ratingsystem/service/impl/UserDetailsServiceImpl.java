@@ -29,13 +29,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
+        serviceLogger.info("Fetching user from repository with email: {}", email);
         Optional<User> user = userRepository.findByEmail(email);
 
         if (user.isEmpty()) {
-            serviceLogger.error("User not found; email = {}", email);
+            serviceLogger.warn("User not found; email = {}", email);
             throw new UserNotFoundException("User with email " + email + " not found");
         }
 
+        serviceLogger.info("Returning userPrincipal of user with ID: {}", user.get().getId());
         return new UserPrincipal(user.get());
     }
 }

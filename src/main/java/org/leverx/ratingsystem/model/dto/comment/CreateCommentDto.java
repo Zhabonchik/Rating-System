@@ -7,7 +7,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreateCommentDto(
         @NotNull @NotEmpty(message = "Must not be empty") String message,
-        /*@NotNull @NotEmpty(message = "Must not be empty") Integer sellerId,
-        @NotNull @NotEmpty(message = "Must not be empty") Integer authorId,*/
         @NotNull @Min(1) @Max(5)  Integer rating) {
 }

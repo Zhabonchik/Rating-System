@@ -17,6 +17,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * This authentication filter checks JWT-Token in every HTTP request
+ * and if the token is valid, then user is set into SecurityContextHolder
+ **/
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -43,12 +48,20 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = applicationContext.getBean(UserDetailsServiceImpl.class).loadUserByUsername(username);
+
+            UserDetails userDetails = applicationContext.getBean(UserDetailsServiceImpl.class)
+                    .loadUserByUsername(username);
+
             if (jwtService.validateToken(token, userDetails)) {
+
                 UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(userDetails, null,
+                                userDetails.getAuthorities());
+
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
             } else {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
                 return;

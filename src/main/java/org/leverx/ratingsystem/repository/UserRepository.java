@@ -31,5 +31,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     GROUP BY u.id, u.email, u.firstName, u.lastName
     ORDER BY COALESCE(CAST(AVG(c.rating) as double), 0.0) DESC
     """)
-    Page<GetUserWithRatingDto> findAllSortedByRating(Pageable pageable);
+    Page<GetUserWithRatingDto> findAllSellersSortedByRating(Pageable pageable);
 }

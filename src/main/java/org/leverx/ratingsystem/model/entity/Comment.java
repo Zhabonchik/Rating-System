@@ -51,4 +51,18 @@ public class Comment {
     public Comment() {
 
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", message='" + message + '\'' +
+                ", author=" + author.getId() +
+                ", seller=" + seller.getId() +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", rating=" + rating +
+                ", verifiedByAdmin=" + verifiedByAdmin +
+                '}';
+    }
 }

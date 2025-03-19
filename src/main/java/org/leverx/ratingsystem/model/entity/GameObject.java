@@ -42,4 +42,17 @@ public class GameObject {
 
     public GameObject() {
     }
+
+    @Override
+    public String toString() {
+        return "GameObject{" +
+                "id=" + id +
+                ", game='" + game + '\'' +
+                ", title='" + title + '\'' +
+                ", text='" + text + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", user=" + user.getId() +
+                '}';
+    }
 }

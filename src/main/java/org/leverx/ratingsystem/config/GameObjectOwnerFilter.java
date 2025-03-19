@@ -16,6 +16,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Custom filter that is used, when a user wants to delete or update a game object.
+ * It ensures, that a particular game object belongs to the user, who wants to modify/delete it.
+ * **/
+
 @Component
 public class GameObjectOwnerFilter extends OncePerRequestFilter {
 

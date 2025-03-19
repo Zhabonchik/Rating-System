@@ -18,6 +18,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Custom filter that is used, when a user wants to delete or update a comment.
+ * It ensures, that a particular comment belongs to the user, who wants to modify/delete it.
+ * **/
+
 @Component
 public class CommentOwnerFilter extends OncePerRequestFilter {
 
@@ -38,6 +43,7 @@ public class CommentOwnerFilter extends OncePerRequestFilter {
 
         if ((method.equals("PATCH") || method.equals("DELETE")) && requestURI.matches("/users/\\d+/comments/\\d+")) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
             if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal userDetails)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized");
                 return;
@@ -48,12 +54,14 @@ public class CommentOwnerFilter extends OncePerRequestFilter {
             Integer commentId = Integer.parseInt(pathParts[4]);
 
             Optional<Comment> commentOptional = commentRepository.findByIdWithAuthor(commentId);
+
             if (commentOptional.isEmpty()) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Comment not found");
                 return;
             }
 
             Comment comment = commentOptional.get();
+
             if (!comment.getAuthor().getId().equals(userId) || !userDetails.getId().equals(userId)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
                 return;

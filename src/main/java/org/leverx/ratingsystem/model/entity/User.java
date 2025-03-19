@@ -59,4 +59,19 @@ public class User {
 
     public User() {
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", role=" + role +
+                ", verifiedByAdmin=" + verifiedByAdmin +
+                ", enabled=" + enabled +
+                '}';
+    }
 }
